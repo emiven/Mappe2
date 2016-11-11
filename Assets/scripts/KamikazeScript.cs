@@ -77,17 +77,15 @@ public class KamikazeScript : MonoBehaviour {
 				Destroy(gameObject);
 			}
 			
-			a = 3f;
-			b = 1f;
-			amp = (a* Mathf.Log(b*(dist.magnitude + 1f)))/2;
+
 
 			if (dist.magnitude >= 10.0f) {
 				fart = 2.0f;
 			}
 			else 
 			{
-				fart = 0.1f + amp;
-				fart = Mathf.Clamp (fart, 0.0f, 10f);
+			fart = 5.0f;
+
 			}
 		if (health == 100) 
 		{
@@ -104,8 +102,9 @@ public class KamikazeScript : MonoBehaviour {
 			}
 		}
 
-		if(health != 100)
+		else if(health != 100)
 		{
+			fart = 10.0f;
 			moveTowards();
 		}
 	}

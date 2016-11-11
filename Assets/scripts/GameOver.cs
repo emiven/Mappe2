@@ -9,6 +9,7 @@ public class GameOver : MonoBehaviour {
 	string quitButton = "Quit";
 	public GameObject GameOverScreen;
 
+
 	// Use this for initialization
 	void Start () {
 		GameOverScreen.SetActive(false);
@@ -23,11 +24,21 @@ public class GameOver : MonoBehaviour {
 	//stop the game and display a game over screen
 	void DeathCheck() {
 		if (Health.playerHealth <= 0) {
+			SaveScore ();
+			if (PlayerPrefs.HasKey ("HighScore")) 
+			{
+				if (PlayerPrefs.GetInt ("HighScore" < Points.score)) {
+					PlayerPrefs.SetInt("HighScore", Points.score)
+					
+			}
 			GameOverScreen.SetActive(true);
 			Time.timeScale = 0f;
 		}
 	}
-
+	void SaveScore()
+	{
+		PlayerPrefs.SetInt ("score", Points.score);
+	}
 	void RetryLevel() {
 		if (GameOverScreen.activeSelf) {
 			if (Input.GetButtonDown(pauseButton)) {
