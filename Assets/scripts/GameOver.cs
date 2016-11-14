@@ -14,6 +14,10 @@ public class GameOver : MonoBehaviour {
 	void Start () {
 		GameOverScreen.SetActive(false);
 	}
+	void SaveScore()
+	{
+		PlayerPrefs.SetInt ("score", Points.score);
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -22,29 +26,38 @@ public class GameOver : MonoBehaviour {
 	}
 
 	//stop the game and display a game over screen
-	void DeathCheck() {
-		if (Health.playerHealth <= 0) {
+	void DeathCheck() 
+	{
+		if (Health.playerHealth <= 0)
+		{
 			SaveScore ();
-			if (PlayerPrefs.HasKey ("HighScore")) 
+			if (PlayerPrefs.HasKey ("HighScore"))
 			{
-				if (PlayerPrefs.GetInt ("HighScore" < Points.score)) {
-					PlayerPrefs.SetInt("HighScore", Points.score)
+				if (PlayerPrefs.GetInt ("HighScore") < Points.score) 
+				{
+					PlayerPrefs.SetInt ("HighScore", Points.score);
 					
+				} else 
+				{
+					PlayerPrefs.SetInt ("HighScore", Points.score);
+				}
 			}
 			GameOverScreen.SetActive(true);
 			Time.timeScale = 0f;
 		}
+
 	}
-	void SaveScore()
+	
+	void RetryLevel() 
 	{
-		PlayerPrefs.SetInt ("score", Points.score);
-	}
-	void RetryLevel() {
-		if (GameOverScreen.activeSelf) {
-			if (Input.GetButtonDown(pauseButton)) {
+		if (GameOverScreen.activeSelf) 
+	{
+			if (Input.GetButtonDown(pauseButton)) 
+				{
 				SceneManager.LoadScene(levelToLoad, LoadSceneMode.Single);
 			}
-			if (Input.GetButtonDown(quitButton)) {
+			if (Input.GetButtonDown(quitButton)) 
+				{
 				Application.Quit();
 			}
 		}

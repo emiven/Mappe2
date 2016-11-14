@@ -7,6 +7,7 @@ public class Enemymovement : MonoBehaviour {
 	public Rigidbody rb;
 	private SpriteRenderer sRendrer;
     public Transform enemylazerprefab;
+	public Transform drop;
 	private float a;
 	private float b;
 	private float r;
@@ -16,22 +17,21 @@ public class Enemymovement : MonoBehaviour {
 	public Vector3 edist;
 	public Vector3 Rad;
 	public float disty;
+	public int v;
     public int maxHealth = 100;
     [HideInInspector]
     public int health;
     float randomrotation;
-	// Use this for initialization
+
 	void Start () {
-        //        if (transform.position.y == -32)
-        //        {
-        //            speed = -1.0f;
-        //        }
+
+		 v = Random.Range(0, 16);
         health = maxHealth;
 		sRendrer = GetComponent<SpriteRenderer> ();
 		r = Random.Range(2.0f, 6f);
 		r = Random.Range(3.0f, 7.0f);
         randomrotation = Random.Range(-10f, 10f);
-        StartCoroutine(Shoot(r));
+  //      StartCoroutine(Shoot(r));
         spiller = GameObject.FindGameObjectWithTag("Player");
 		fiende = GameObject.FindGameObjectWithTag("enemy");
 	}
@@ -54,10 +54,14 @@ public class Enemymovement : MonoBehaviour {
     {
         gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, spiller.transform.position, Time.deltaTime * -fart);
     }
-//	void keepDistance()
-//	{
-//		gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, fiende.transform.position, Time.deltaTime * -200);
-//	}
+	void dropSpawn()
+	{
+		if(v == 10)
+		{
+			Instantiate(drop, transform.position, transform.rotation);
+		}
+		
+	}
 	void rotateAroundPlayer()
 	{
 		if (randomrotation > 0)
@@ -71,7 +75,8 @@ public class Enemymovement : MonoBehaviour {
 	{
         if (health <= 0)
         {
-            Points.score++;
+			dropSpawn ();
+			Points.score++;
             Destroy(gameObject);
         }
         rotateAroundPlayer ();
@@ -122,13 +127,17 @@ public class Enemymovement : MonoBehaviour {
             StartCoroutine(flash(0.2f));
         }
     }
-    IEnumerator Shoot(float WaitTime)
-    {
-        if (Health.playerHealth != 0)
-        Instantiate(enemylazerprefab, transform.position, transform.rotation);
-        yield return new WaitForSeconds(WaitTime);
-        StartCoroutine(Shoot(r));
-        
-    }
+//    IEnumerator Shoot(float WaitTime)
+//    {
+//        if (Health.playerHealth != 0)
+//        Instantiate(enemylazerprefab, transform.position, transform.rotation);
+//        yield return new WaitForSeconds(WaitTime);
+//        StartCoroutine(Shoot(r));
+//        
+//    }
+	void anus()
+	{
+		
+	}
 	
 }

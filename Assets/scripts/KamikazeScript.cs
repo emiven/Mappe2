@@ -73,7 +73,7 @@ public class KamikazeScript : MonoBehaviour {
 		distfinder ();
 			if (health <= 0)
 			{
-				Points.score++;
+			Points.score++;
 				Destroy(gameObject);
 			}
 			

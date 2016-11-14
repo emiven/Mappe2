@@ -5,21 +5,13 @@ using UnityEngine.UI;
 public class Points : MonoBehaviour {
 
     Text txt;
-	public int score;
-	public int HighScore = 0; 
+	public static int score;
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         txt = gameObject.GetComponent<Text>();
         txt.text = "Score : " + score;
-		if (PlayerPrefs.HasKey ("score")) 
-		{
-			if (Application.loadedLevel == 0) {
-				PlayerPrefs.DeleteKey ("score");
-				score = 0;
-			} else {
-				score = PlayerPrefs.GetInt ("score");
-			}
-		}
+		score = 0;
     }
 	
 	// Update is called once per frame

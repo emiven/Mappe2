@@ -13,20 +13,98 @@ public class characterMovement : MonoBehaviour {
     public float drag;
     private bool isShooting = false;
 	private bool autoFire = false;
+	public int f = 0;
 
 	public Weapon activeWeapon;
     public Weapon weapon1;
     public Weapon weapon2;
     public Weapon weapon3;
+	public bool allowWeapon1 = true;
+	public bool allowWeapon2 = false;
+	public bool allowWeapon3 = false;
 
 
     // Use this for initialization
     void Start () {
         body2D = GetComponent<Rigidbody2D>();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+	IEnumerator cooldown(float time)
+	{
+		if (allowWeapon2 == true) 
+		{
+			yield return new WaitForSeconds (time);
+			allowWeapon2 = false;
+			f = 0;
+		}
+		if(allowWeapon3 == true)
+		{
+			yield return new WaitForSeconds (time);	
+			allowWeapon3 = false;
+			f = 0;
+		}
+
+
+	}
+
+	void whatWeapon()
+	{
+		float l = Random.Range(0f,10f);
+		if(l < 5f)
+		{
+			allowWeapon2 = true;
+			StartCoroutine (cooldown (10f));
+		}
+		if(l >= 5f)
+		{
+			allowWeapon3 = true; 
+			StartCoroutine (cooldown (10f));
+		}
+	}
+
+
+	void Switching()
+	{
+		if (Input.GetButtonDown("WeaponSwitch") && f != 3)
+		{
+			f = f + 1;
+		}
+
+		if(f == 0)
+		{
+			activeWeapon = weapon1;
+		}
+		if(f == 1)
+		{
+			if(allowWeapon2 == true)
+			{
+				activeWeapon = weapon2;
+			}else{
+				f = f + 1;
+			}
+
+		}
+		if(f == 2)
+		{
+			if(allowWeapon3 == true)
+			{
+				activeWeapon = weapon3;
+			}else{
+				f = f + 1;
+			}
+		}
+		if (Input.GetButtonDown("WeaponSwitch") && f == 3)
+		{
+			f = 0;
+		}
+	}
+	void FixedUpdate()
+	{
+
+	}
+	void Update () 
+	{
+		Switching ();
         var v3 = Input.mousePosition;
         v3.z = 10.0f;
         v3 = Camera.main.ScreenToWorldPoint(v3);
@@ -36,31 +114,11 @@ public class characterMovement : MonoBehaviour {
         speed = vel.magnitude;
 
 
-        if (Input.GetButtonDown("Weapon1"))
-            activeWeapon = weapon1;
-        if (Input.GetButtonDown("Weapon2"))
-            activeWeapon = weapon2;
-        if (Input.GetButtonDown("Weapon3"))
-            activeWeapon = weapon3;
-        /* if (Input.GetKey(KeyCode.LeftArrow))
-         {
-
-             transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle + rotationspeed));
-         }
-         if (Input.GetKey(KeyCode.RightArrow))
-         {
-             transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle - rotationspeed));
-         } */
-
 
         float rightvertical = Input.GetAxis("rightJoystickVertical");
         float rightHorizontal = Input.GetAxis("rightJoystickHorizontal");
         float abuttondown = Input.GetAxis("Fire1");
-        
-        /*if (isShooting == false && abuttondown != 0f && (rightHorizontal != 0f || rightvertical != 0f))
-        {
-            StartCoroutine(attackAndWait(0.25f));
-        }*/
+
 		if (Input.GetKeyDown (KeyCode.Mouse1))
 			autoFire = !autoFire;
 
@@ -108,6 +166,7 @@ public class characterMovement : MonoBehaviour {
         {
             Health.playerHealth--;
         }
+
         if (Health.playerHealth <= 0)
         {
             Destroy(gameObject);
@@ -115,6 +174,10 @@ public class characterMovement : MonoBehaviour {
     }
     void OnCollisionEnter2D(Collision2D other)
     {
+		if(other.gameObject.tag =="drop")
+		{
+			whatWeapon ();
+		}
         if (other.gameObject.tag == "enemy")
         {
             Health.playerHealth--;
@@ -133,12 +196,5 @@ public class characterMovement : MonoBehaviour {
         isShooting = false;
     }
 }
-    /*float Rad2Deg(float radianIn)
-    {
 
-    }
-    float Deg2Rad(float DegreeIn)
-    {
-
-    }*/
 
