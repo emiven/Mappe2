@@ -4,17 +4,18 @@ using System.Collections;
 public class enemylazermovement : MonoBehaviour {
 
     GameObject body2D;
-    private float speed = 0.10f;
+	GameObject player2;
+    public float speed = 0.10f;
     float angle;
     Vector3 enemyToPlayer;
-    
+	//private Transform player2;
 
     // Use this for initialization
     void Start()
     {
         StartCoroutine(Destroy(5f));
-
         enemyToPlayer = new Vector3(0f, 0f, 0f);
+		player2 = GameObject.FindGameObjectWithTag("Player");
         body2D = GameObject.FindGameObjectWithTag("Player");
         enemyToPlayer = body2D.transform.position - transform.position;
         angle = Mathf.Sqrt((enemyToPlayer.x * enemyToPlayer.x) + (enemyToPlayer.y * enemyToPlayer.y));
@@ -31,6 +32,7 @@ public class enemylazermovement : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         transform.position += enemyToPlayer.normalized * speed;
     }
         void OnTriggerExit2D(Collider2D other)

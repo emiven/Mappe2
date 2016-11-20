@@ -11,10 +11,13 @@ public class Health : MonoBehaviour {
         txt = gameObject.GetComponent<Text>();
         txt.text = "Health : " + playerHealth;
 		playerHealth = 5;
+	
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
+
         txt.text = "Health : " + playerHealth;
     }
 }

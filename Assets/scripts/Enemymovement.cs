@@ -6,11 +6,16 @@ public class Enemymovement : MonoBehaviour {
 	private GameObject fiende;
 	public Rigidbody rb;
 	private SpriteRenderer sRendrer;
+	private GameObject scRendrer;
     public Transform enemylazerprefab;
 	public Transform drop;
 	private float a;
 	private float b;
 	private float r;
+	public float k;
+	public float t;
+	public float f;
+	private float angle;
 	public float fart;
 	public float amp;
 	public Vector3 dist;
@@ -19,21 +24,37 @@ public class Enemymovement : MonoBehaviour {
 	public float disty;
 	public int v;
     public int maxHealth = 100;
-    [HideInInspector]
     public int health;
+	public float startTime;
+
     float randomrotation;
+	Vector3 target;
 
 	void Start () {
-
+		sRendrer = GetComponent<SpriteRenderer> ();
+		startTime = Time.time;
+		StartCoroutine(Shoot(k));
 		 v = Random.Range(0, 16);
         health = maxHealth;
-		sRendrer = GetComponent<SpriteRenderer> ();
-		r = Random.Range(2.0f, 6f);
+		sRendrer.color = Color.red;
+		k = Random.Range(2.0f, 4.0f);
 		r = Random.Range(3.0f, 7.0f);
         randomrotation = Random.Range(-10f, 10f);
-  //      StartCoroutine(Shoot(r));
         spiller = GameObject.FindGameObjectWithTag("Player");
 		fiende = GameObject.FindGameObjectWithTag("enemy");
+	}
+	void anticipation()
+	{
+		f = Mathf.SmoothStep (0.055f, 0.0f, t);
+		t = (Time.time - startTime) / k;
+		scRendrer.transform.localScale = new Vector3 (f, 0.06f,0.06f);
+	}
+	void rotation()
+	{
+		target = spiller.transform.position - transform.position;
+		angle = Mathf.Atan2 (target.y, target.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
+		
 	}
 	IEnumerator flash(float time)
 	{
@@ -52,7 +73,7 @@ public class Enemymovement : MonoBehaviour {
 	}
     void moveAway()
     {
-        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, spiller.transform.position, Time.deltaTime * -fart);
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, spiller.transform.position, Time.deltaTime * -fart/2);
     }
 	void dropSpawn()
 	{
@@ -73,6 +94,9 @@ public class Enemymovement : MonoBehaviour {
 
 	void FixedUpdate()
 	{
+		scRendrer = GameObject.FindGameObjectWithTag("Pointer");
+		//anticipation ();
+		rotation ();
         if (health <= 0)
         {
 			dropSpawn ();
@@ -127,17 +151,14 @@ public class Enemymovement : MonoBehaviour {
             StartCoroutine(flash(0.2f));
         }
     }
-//    IEnumerator Shoot(float WaitTime)
-//    {
-//        if (Health.playerHealth != 0)
-//        Instantiate(enemylazerprefab, transform.position, transform.rotation);
-//        yield return new WaitForSeconds(WaitTime);
-//        StartCoroutine(Shoot(r));
-//        
-//    }
-	void anus()
+	IEnumerator Shoot(float WaitTime)
 	{
-		
+		if (Health.playerHealth != 0)
+			Instantiate(enemylazerprefab, transform.position, transform.rotation);
+		yield return new WaitForSeconds(WaitTime);
+		StartCoroutine(Shoot(r));
+
 	}
+
 	
 }

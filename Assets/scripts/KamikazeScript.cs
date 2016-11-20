@@ -12,15 +12,16 @@ public class KamikazeScript : MonoBehaviour {
 		private float b;
 		private float r;
 		public float fart;
+		private float angle;
 		public float amp;
 		public Vector3 dist;
 		public Vector3 edist;
 		public Vector3 Rad;
 		public float disty;
 		public int maxHealth = 100;
-		[HideInInspector]
 		public int health;
 		float randomrotation;
+		Vector3 target;
 		// Use this for initialization
 		void Start () {
 			//        if (transform.position.y == -32)
@@ -36,6 +37,13 @@ public class KamikazeScript : MonoBehaviour {
 			spiller = GameObject.FindGameObjectWithTag("Player");
 			fiende = GameObject.FindGameObjectWithTag("enemy");
 		}
+	void rotation()
+	{
+		target = spiller.transform.position - transform.position;
+		angle = Mathf.Atan2 (target.y, target.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
+
+	}
 		IEnumerator flash(float time)
 		{
 			yield return new WaitForSeconds (time);
@@ -70,6 +78,7 @@ public class KamikazeScript : MonoBehaviour {
 
 		void FixedUpdate()
 		{
+		rotation ();
 		distfinder ();
 			if (health <= 0)
 			{
@@ -84,7 +93,7 @@ public class KamikazeScript : MonoBehaviour {
 			}
 			else 
 			{
-			fart = 5.0f;
+			fart = 3.0f;
 
 			}
 		if (health == 100) 
