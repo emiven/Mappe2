@@ -33,7 +33,7 @@ public class KamikazeScript : MonoBehaviour {
 			r = Random.Range(2.0f, 6f);
 			r = Random.Range(3.0f, 7.0f);
 			randomrotation = Random.Range(-10f, 10f);
-			StartCoroutine(Shoot(r));
+			//StartCoroutine(Shoot(r));
 			spiller = GameObject.FindGameObjectWithTag("Player");
 			fiende = GameObject.FindGameObjectWithTag("enemy");
 		}

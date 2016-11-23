@@ -3,16 +3,15 @@ using System.Collections;
 
 public class glow : MonoBehaviour {
 	private SpriteRenderer s;
-	public int anus = 0;
-	public bool glowing = false;
-	public float startTime;
-	public float t;
-	public float tid;
-	float lengde = 1.0f;
+	public bool fading = false;
+	private float startTime;
+	private float t;
+	float fadeTime = 4.0f;
 	void Start () 
 	{
 		s = GetComponent<SpriteRenderer> ();
 		startTime = Time.time;
+		s.color = Color.black;
 
 
 	}
@@ -20,39 +19,44 @@ public class glow : MonoBehaviour {
 	IEnumerator flash(float time)
 	{
 		yield return new WaitForSeconds (time);
-		s.color = Color.black;
-		glowing = false;
+
+	}
+	void colourChange()
+	{
+		s.color = new Color (60.0f/255.0f, 200.0f/255.0f,200.0f/255.0f, 1.0f);
 	}
 
 	void colourFade()
 	{ 
-		t = (Time.time - startTime) / lengde;
-		s.color = new Color (Mathf.Lerp (60.0f/255.0f, 0f, t), Mathf.Lerp (200.0f/255.0f, 0f, t), Mathf.SmoothStep (200.0f/255.0f, 0f, t), 1.0f);
-		StartCoroutine(flash(4.0f));
+		t = (Time.time - startTime) / fadeTime;
+		s.color = new Color (Mathf.SmoothStep (60.0f/255.0f, 0f, t), Mathf.SmoothStep (200.0f/255.0f, 0f, t), Mathf.SmoothStep (200.0f/255.0f, 0f, t), 1.0f);
+	
 	}
+
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if(other.gameObject.tag == "Player")
 		{
-			glowing = true;
+			colourChange ();
 
 		}
 	}
-//	void OnTriggerExit2D(Collider2D other)
-//	{
-//		if(other.gameObject.tag == "Player")
-//		{
-//			glowing = true;
-//		}
-//	}
-
-
-	void FixedUpdate () 
+	void OnTriggerExit2D(Collider2D other)
 	{
+		if(other.gameObject.tag == "Player")
+		{
+			fading = true;
+			StartCoroutine(flash(4.0f));
+		}
+	}
 		
-		if(glowing == true)
+
+
+	void Update () 
+	{
+		if(fading == true)
 		{
 			colourFade ();
-		}	
+		}
 	}
 }
