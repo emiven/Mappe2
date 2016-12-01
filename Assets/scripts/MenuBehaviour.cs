@@ -7,7 +7,6 @@ public class MenuBehaviour : MonoBehaviour {
 	//change to whatever input will be used for pausing
 	private string pauseInput = "escape";
 	private string pauseButton = "pause";
-
 	private string continueButton = "pause";
 	private string quitButton = "Quit";
 	//public gameobject for storing the pause menu

@@ -14,11 +14,7 @@ public class GameOver : MonoBehaviour {
 	void Start () {
 		GameOverScreen.SetActive(false);
 	}
-	void SaveScore()
-	{
-		PlayerPrefs.SetInt ("score", Points.score);
-	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		DeathCheck();
@@ -30,18 +26,7 @@ public class GameOver : MonoBehaviour {
 	{
 		if (Health.playerHealth <= 0)
 		{
-			SaveScore ();
-			if (PlayerPrefs.HasKey ("HighScore"))
-			{
-				if (PlayerPrefs.GetInt ("HighScore") < Points.score) 
-				{
-					PlayerPrefs.SetInt ("HighScore", Points.score);
-					
-				} else 
-				{
-					PlayerPrefs.SetInt ("HighScore", Points.score);
-				}
-			}
+			
 			GameOverScreen.SetActive(true);
 			Time.timeScale = 0f;
 		}

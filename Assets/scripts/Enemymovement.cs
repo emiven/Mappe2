@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Enemymovement : MonoBehaviour {
+	GameObject Paudio;
 	private GameObject spiller;
 	private GameObject fiende;
 	public Rigidbody rb;
@@ -9,17 +10,19 @@ public class Enemymovement : MonoBehaviour {
 	private GameObject scRendrer;
     public Transform enemylazerprefab;
 	public Transform drop;
+	public Transform kami;
+	public Transform healthdrop;
 	private float a;
 	private float b;
 	private float r;
 	public float k;
 	public float t;
 	public float f;
+	public bool isGiant = false;
 	private float angle;
 	public float fart;
 	public float amp;
 	public Vector3 dist;
-	public Vector3 edist;
 	public Vector3 Rad;
 	public float disty;
 	public int v;
@@ -29,19 +32,21 @@ public class Enemymovement : MonoBehaviour {
 
     float randomrotation;
 	Vector3 target;
+	public Points p;
 
 	void Start () {
+		Paudio = GameObject.Find ("AudioPlayer");
 		sRendrer = GetComponent<SpriteRenderer> ();
 		startTime = Time.time;
-		StartCoroutine(Shoot(k));
+		//StartCoroutine(Shoot(k));
 		 v = Random.Range(0, 16);
         health = maxHealth;
-		sRendrer.color = Color.red;
 		k = Random.Range(2.0f, 4.0f);
 		r = Random.Range(3.0f, 7.0f);
         randomrotation = Random.Range(-10f, 10f);
         spiller = GameObject.FindGameObjectWithTag("Player");
 		fiende = GameObject.FindGameObjectWithTag("enemy");
+		colourChanger ();
 	}
 	void anticipation()
 	{
@@ -59,13 +64,36 @@ public class Enemymovement : MonoBehaviour {
 	IEnumerator flash(float time)
 	{
 		yield return new WaitForSeconds (time);
-		sRendrer.color = Color.red;
+		colourChanger ();
+	
+	}
+	void colourChanger()
+	{
+		if (isGiant == false) {
+			if (health >= 150) {
+				sRendrer.color = Color.red;
+			}
+			if (health < 150 && health >= 100) {
+				sRendrer.color = new Color (160.0f / 255.0f, 55.0f / 255.0f, 55.0f / 255.0f, 1f);
+			} else if (health < 100) {
+				sRendrer.color = new Color (160.0f / 255.0f, 55.0f / 255.0f, 55.0f / 255.0f, 100.0f / 255.0f);
+			}
+		}else{
+			if (health >= 3500) {
+				sRendrer.color = Color.yellow;
+			}
+			if (health < 3500 && health >= 1500) {
+				sRendrer.color = new Color (250.0f / 255.0f, 250.0f / 255.0f, 190.0f / 255.0f, 1f);
+			} else if (health < 1500) {
+				sRendrer.color = new Color (250.0f / 255.0f, 250.0f / 255.0f, 190.0f / 255.0f, 100.0f / 255.0f);
+			}
+		}
+		
 	}
 	void distfinder() //finner distanse mellom spiller og enemy
 	{
 
 			dist = spiller.transform.position - transform.position;
-			edist = fiende.transform.position - transform.position;
 	}
 	void moveTowards()
 	{
@@ -80,6 +108,10 @@ public class Enemymovement : MonoBehaviour {
 		if(v == 10)
 		{
 			Instantiate(drop, transform.position, transform.rotation);
+		}
+		if(v == 4)
+		{
+			Instantiate(healthdrop, transform.position, transform.rotation);
 		}
 		
 	}
@@ -100,7 +132,7 @@ public class Enemymovement : MonoBehaviour {
         if (health <= 0)
         {
 			dropSpawn ();
-			Points.score++;
+			//p.score++;
             Destroy(gameObject);
         }
         rotateAroundPlayer ();
@@ -122,6 +154,7 @@ public class Enemymovement : MonoBehaviour {
 
 		} else if (dist.magnitude < (r - 1f)) {
 			moveAway ();
+
 } 
 		//else if (edist.magnitude < (1f)) {
 //			keepDistance ();
@@ -135,30 +168,27 @@ public class Enemymovement : MonoBehaviour {
             Destroy(gameObject);
         }
     }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player" || other.gameObject.tag == "lazer")
-        {
-			sRendrer.color = Color.white;
-			StartCoroutine (flash (0.2f));         
-        }
-    }
+
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Player" || other.gameObject.tag == "lazer")
         {
             sRendrer.color = Color.white;
+			Paudio.GetComponent<AudioMaster>().playsound (1);
             StartCoroutine(flash(0.2f));
         }
     }
-	IEnumerator Shoot(float WaitTime)
-	{
-		if (Health.playerHealth != 0)
-			Instantiate(enemylazerprefab, transform.position, transform.rotation);
-		yield return new WaitForSeconds(WaitTime);
-		StartCoroutine(Shoot(r));
-
-	}
+//	IEnumerator Shoot(float WaitTime)
+//	{
+//		if (Health.playerHealth != 0)
+//		if (isGiant == true) {	
+//			Instantiate (kami, transform.position, transform.rotation);
+//		}else{Instantiate(enemylazerprefab, transform.position, transform.rotation);
+//		}
+//		yield return new WaitForSeconds(WaitTime);
+//		StartCoroutine(Shoot(r));
+//
+//	}
 
 	
 }

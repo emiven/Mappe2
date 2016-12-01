@@ -10,7 +10,7 @@ public class Health : MonoBehaviour {
     void Start () {
         txt = gameObject.GetComponent<Text>();
         txt.text = "Health : " + playerHealth;
-		playerHealth = 5;
+		playerHealth = 50;
 	
     }
 	

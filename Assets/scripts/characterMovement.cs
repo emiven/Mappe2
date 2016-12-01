@@ -8,42 +8,35 @@ public class characterMovement : MonoBehaviour {
     float rotationspeed = 2.0f;
     public Transform lazerprefab;
     private Rigidbody2D body2D;
+	public GameObject camera;
     public float force = 0.5f;
     public float maxSpeed = 1f;
     public float drag;
     private bool isShooting = false;
 	private bool autoFire = false;
 	public int f = 0;
-
+	public AudioMaster Paudio;
 	public Weapon activeWeapon;
     public Weapon weapon1;
     public Weapon weapon2;
     public Weapon weapon3;
-	public bool allowWeapon1 = true;
-	public bool allowWeapon2 = false;
-	public bool allowWeapon3 = false;
+//	public bool allowWeapon1 = true;
+//	public bool allowWeapon2 = false;
+//	public bool allowWeapon3 = false;
 
 
     // Use this for initialization
     void Start () {
         body2D = GetComponent<Rigidbody2D>();
+		//Switching ();
     }
 
 	IEnumerator cooldown(float time)
 	{
-		if (allowWeapon2 == true) 
-		{
-			yield return new WaitForSeconds (time);
-			allowWeapon2 = false;
-			f = 0;
-		}
-		if(allowWeapon3 == true)
-		{
-			yield return new WaitForSeconds (time);	
-			allowWeapon3 = false;
-			f = 0;
-		}
 
+			yield return new WaitForSeconds (time);
+			activeWeapon = weapon1;
+			f = 0;
 
 	}
 
@@ -52,59 +45,58 @@ public class characterMovement : MonoBehaviour {
 		float l = Random.Range(0f,10f);
 		if(l < 5f)
 		{
-			allowWeapon2 = true;
+			activeWeapon = weapon2;
 			StartCoroutine (cooldown (10f));
 		}
 		if(l >= 5f)
 		{
-			allowWeapon3 = true; 
+			activeWeapon = weapon3;
 			StartCoroutine (cooldown (10f));
 		}
 	}
 
 
-	void Switching()
-	{
-		if (Input.GetButtonDown("WeaponSwitch") && f != 3)
-		{
-			f = f + 1;
-		}
-
-		if(f == 0)
-		{
-			activeWeapon = weapon1;
-		}
-		if(f == 1)
-		{
-			if(allowWeapon2 == true)
-			{
-				activeWeapon = weapon2;
-			}else{
-				f = f + 1;
-			}
-
-		}
-		if(f == 2)
-		{
-			if(allowWeapon3 == true)
-			{
-				activeWeapon = weapon3;
-			}else{
-				f = f + 1;
-			}
-		}
-		if (Input.GetButtonDown("WeaponSwitch") && f == 3)
-		{
-			f = 0;
-		}
-	}
+//	void Switching()
+//	{
+//		if (Input.GetButtonDown("WeaponSwitch") && f != 3)
+//		{
+//			f = f + 1;
+//		}
+//
+//		if(f == 0)
+//		{
+//			activeWeapon = weapon1;
+//		}
+//		if(f == 1)
+//		{
+//			if(allowWeapon2 == true)
+//			{
+//				activeWeapon = weapon2;
+//			}else{
+//				f = f + 1;
+//			}
+//
+//		}
+//		if(f == 2)
+//		{
+//			if(allowWeapon3 == true)
+//			{
+//				activeWeapon = weapon3;
+//			}else{
+//				f = f + 1;
+//			}
+//		}
+//		if (Input.GetButtonDown("WeaponSwitch") && f == 3)
+//		{
+//			f = 0;
+//		}
+//	}
 	void FixedUpdate()
 	{
 
 	}
 	void Update () 
 	{
-		Switching ();
         var v3 = Input.mousePosition;
         v3.z = 10.0f;
         v3 = Camera.main.ScreenToWorldPoint(v3);
@@ -162,8 +154,15 @@ public class characterMovement : MonoBehaviour {
     }
     void OnTriggerEnter2D(Collider2D other)
     {
+		if(other.gameObject.tag =="drop")
+		{
+			Paudio.playsound (6);
+			whatWeapon ();
+		}
         if (other.gameObject.tag == "enemylazer")
         {
+			camera.GetComponent<CameraShake>().ShakeCamera(7f, 0.01f);
+			Paudio.playsound (5);
             Health.playerHealth--;
         }
 
@@ -171,15 +170,18 @@ public class characterMovement : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+		if(other.gameObject.tag =="healthdrop")
+		{
+			Health.playerHealth++;
+			Paudio.playsound (2);
+		}
     }
     void OnCollisionEnter2D(Collision2D other)
     {
-		if(other.gameObject.tag =="drop")
-		{
-			whatWeapon ();
-		}
         if (other.gameObject.tag == "enemy")
         {
+			camera.GetComponent<CameraShake>().ShakeCamera(10f, 0.01f);
+			Paudio.playsound (5);
             Health.playerHealth--;
             Destroy(other.gameObject);
         }

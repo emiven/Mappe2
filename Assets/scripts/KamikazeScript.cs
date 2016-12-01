@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class KamikazeScript : MonoBehaviour {
-
+	 
 		private GameObject spiller;
 		private GameObject fiende;
 		public Rigidbody rb;
@@ -18,9 +18,10 @@ public class KamikazeScript : MonoBehaviour {
 		public Vector3 edist;
 		public Vector3 Rad;
 		public float disty;
-		public int maxHealth = 100;
+		public int maxHealth = 200;
 		public int health;
 		float randomrotation;
+		GameObject Paudio;
 		Vector3 target;
 		// Use this for initialization
 		void Start () {
@@ -28,6 +29,7 @@ public class KamikazeScript : MonoBehaviour {
 			//        {
 			//            speed = -1.0f;
 			//        }
+			Paudio = GameObject.Find ("AudioPlayer");
 			health = maxHealth;
 			sRendrer = GetComponent<SpriteRenderer> ();
 			r = Random.Range(2.0f, 6f);
@@ -36,7 +38,19 @@ public class KamikazeScript : MonoBehaviour {
 			//StartCoroutine(Shoot(r));
 			spiller = GameObject.FindGameObjectWithTag("Player");
 			fiende = GameObject.FindGameObjectWithTag("enemy");
+		colourChanger ();
 		}
+	void colourChanger()
+	{
+		if (health >= 150) {
+			sRendrer.color = Color.yellow;
+		}
+		if (health < 150 && health >= 100) {
+			sRendrer.color = new Color (250.0f / 255.0f, 250.0f / 255.0f, 190.0f / 255.0f, 1f);
+		} else if (health < 100) {
+			sRendrer.color = new Color (250.0f / 255.0f, 250.0f / 255.0f, 190.0f / 255.0f, 100.0f / 255.0f);
+		}
+	}
 	void rotation()
 	{
 		target = spiller.transform.position - transform.position;
@@ -78,11 +92,13 @@ public class KamikazeScript : MonoBehaviour {
 
 		void FixedUpdate()
 		{
+		colourChanger ();
+
 		rotation ();
 		distfinder ();
 			if (health <= 0)
 			{
-			Points.score++;
+		//	Points.score++;
 				Destroy(gameObject);
 			}
 			
@@ -129,20 +145,13 @@ public class KamikazeScript : MonoBehaviour {
 				Destroy(gameObject);
 			}
 		}
-		void OnTriggerEnter2D(Collider2D other)
-		{
-			if (other.gameObject.tag == "Player" || other.gameObject.tag == "lazer")
-			{
-				sRendrer.color = Color.white;
-				StartCoroutine (flash (0.2f));         
-			}
-		}
 		void OnCollisionEnter2D(Collision2D other)
 		{
 			if (other.gameObject.tag == "Player" || other.gameObject.tag == "lazer")
 			{
 				sRendrer.color = Color.white;
 				StartCoroutine(flash(0.2f));
+				Paudio.GetComponent<AudioMaster>().playsound (1);
 			}
 		}
 		IEnumerator Shoot(float WaitTime)

@@ -2,19 +2,21 @@
 using System.Collections;
 
 public class glow : MonoBehaviour {
-	private SpriteRenderer s;
+
+	public SpriteRenderer tiles;
 	public bool fading = false;
 	private float startTime;
 	private float t;
-	float fadeTime = 4.0f;
+	float fadeTime = 1.0f;
 	void Start () 
 	{
-		s = GetComponent<SpriteRenderer> ();
 		startTime = Time.time;
-		s.color = Color.black;
+
+
 
 
 	}
+
 		
 	IEnumerator flash(float time)
 	{
@@ -23,27 +25,29 @@ public class glow : MonoBehaviour {
 	}
 	void colourChange()
 	{
-		s.color = new Color (60.0f/255.0f, 200.0f/255.0f,200.0f/255.0f, 1.0f);
+		tiles.color = new Color (60.0f/255.0f, 200.0f/255.0f,200.0f/255.0f, 1.0f);
 	}
 
 	void colourFade()
 	{ 
-		t = (Time.time - startTime) / fadeTime;
-		s.color = new Color (Mathf.SmoothStep (60.0f/255.0f, 0f, t), Mathf.SmoothStep (200.0f/255.0f, 0f, t), Mathf.SmoothStep (200.0f/255.0f, 0f, t), 1.0f);
+		t = Time.deltaTime* fadeTime;
+		tiles.color = Color.Lerp (tiles.color, Color.black, t);
 	
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if(other.gameObject.tag == "Player")
+		if(other.gameObject.tag == "tile")
 		{
+			tiles = other.GetComponent<SpriteRenderer>();
 			colourChange ();
+			 
 
 		}
 	}
 	void OnTriggerExit2D(Collider2D other)
 	{
-		if(other.gameObject.tag == "Player")
+		if(other.gameObject.tag == "tile")
 		{
 			fading = true;
 			StartCoroutine(flash(4.0f));

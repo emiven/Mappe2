@@ -37,7 +37,7 @@ public class lazerMovement : MonoBehaviour {
             angle = Mathf.PI * 2 + angle;
         }
         angle = (angle * 360) / (Mathf.PI * 2);
-        angle = 360 - angle;
+		angle = 50;// 360 - angle;
         transform.eulerAngles = new Vector3(0f, 0f, angle);
 
     }
